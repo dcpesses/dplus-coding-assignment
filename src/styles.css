@@ -1,0 +1,62 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #000;
+    color: #fff;
+}
+
+#app {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.row {
+    display: flex;
+    margin-bottom: 20px;
+    overflow-x: auto;
+    overflow-y: none;
+    width: 100%;
+    height: 250px;
+    scrollbar-width: none;
+    -ms-overflow-style: none; /* REALLY hope we're not targeting older IE browsers */
+}
+.row::-webkit-scrollbar {
+    display: none;
+}
+
+.tile {
+    position: relative;
+    height: 144px;
+    max-width: 225px;
+    margin: 0 10px;
+    transition: transform 0.3s ease;
+    aspect-ratio: 16 / 9;
+}
+
+.tile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.tile.focused {
+    transform: scale(1.1);
+    z-index: 1;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #333;
+    padding: 20px;
+    border: 1px solid #555;
+}
+
+.modal.visible {
+    display: block;
+}
