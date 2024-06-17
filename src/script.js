@@ -46,23 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         break;
                 }
 
-                const rowElement = document.createElement('div');
-                rowElement.id = rowData.set.setId;
-                rowElement.classList.add('row');
-                rowElement.dataset.rowIdx = rowIdx;
-                if (rowType !== RowTypes.BILLBOARD) {
-                    const rowHeader = createRowHeader(rowData.set);
-                    rowElement.appendChild(rowHeader);
-                }
-                rowData.set.items.forEach((item) => {
-                    const tile = createTile(item, rowType);
-                    tile.dataset.rowIdx = rowIdx;
-                    tile.dataset.tileIdx = tileIdx;
-                    rowElement.appendChild(tile);
-                    tiles.push(tile);
-                    tileIdx += 1;
-                    console.log({tiles: tiles.length, tileIdx});
-                });
+                const rowElement = renderRow({rowData, rowIdx, rowType});
                 rows.push(rowElement);
                 app.appendChild(rowElement);
                 rowIdx += 1;
@@ -70,11 +54,36 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error(e, 'Unable to parse rowData:', rowData);
             }
         });
+
         if (tiles.length > 0) {
-            focusTile(0);
+            setTimeout(() => {
+                focusTile(0);
+            }, 150);
         }
+
         app.appendChild(modal);
     }
+
+    function renderRow({rowData, rowIdx, rowType}) {
+        const rowElement = document.createElement('div');
+        rowElement.id = rowData.set.setId;
+        rowElement.classList.add('row', `row-${rowType}`);
+        rowElement.dataset.rowIdx = rowIdx;
+
+        const rowHeader = createRowHeader(rowData.set);
+        rowElement.appendChild(rowHeader);
+
+        rowData.set.items.forEach((item) => {
+            const tile = createTile(item, rowType);
+            tile.dataset.rowIdx = rowIdx;
+            tile.dataset.tileIdx = tiles.length;
+            rowElement.appendChild(tile);
+            tiles.push(tile);
+            // tileIdx += 1;
+            // console.log({tiles: tiles.length, tileIdx});
+        });
+        return rowElement;
+    };
 
     function focusTile(index) {
         console.log({index, focusTile: tiles[index]});

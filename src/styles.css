@@ -1,3 +1,18 @@
+@font-face {
+    font-family: InspireBold;
+    src: url("https://config-cd-dmgz.bamgrid.com/static/assets/fonts/inspire/inspire-v02/Inspire-Bold.woff2") format("woff2"),url("https://config-cd-dmgz.bamgrid.com/static/assets/fonts/inspire/inspire-v02/Inspire-Bold.woff") format("woff"),url("https://config-cd-dmgz.bamgrid.com/static/assets/fonts/inspire/inspire-v02/Inspire-Bold.otf") format("opentype")
+}
+
+@font-face {
+    font-family: InspireRegular;
+    src: url("https://config-cd-dmgz.bamgrid.com/static/assets/fonts/inspire/inspire-v02/Inspire-Regular.woff2") format("woff2"),url("https://config-cd-dmgz.bamgrid.com/static/assets/fonts/inspire/inspire-v02/Inspire-Regular.woff") format("woff"),url("https://config-cd-dmgz.bamgrid.com/static/assets/fonts/inspire/inspire-v02/Inspire-Regular.otf") format("opentype")
+}
+
+@font-face {
+    font-family: InspireMini;
+    src: url("https://config-cd-dmgz.bamgrid.com/static/assets/fonts/inspire/inspire-mini-v01/InspireMini-Regular.woff2") format("woff2"),url("https://config-cd-dmgz.bamgrid.com/static/assets/fonts/inspire/inspire-mini-v01/InspireMini-Regular.woff") format("woff"),url("https://config-cd-dmgz.bamgrid.com/static/assets/fonts/inspire/inspire-mini-v01/InspireMini-Regular.otf") format("opentype")
+}
+
 :root {
     --bkgd-gradient-black: #1a1d29;
     --bkgd-gradient-highlight: #143578;
@@ -8,7 +23,7 @@ html {
 }
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: InspireRegular, Arial, sans-serif;
     padding: 0;
     color: #fff;
     background-color: var(--bkgd-gradient-highlight);
