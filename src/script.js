@@ -122,15 +122,28 @@ document.addEventListener('DOMContentLoaded', () => {
         tiles[focusedIndex].scrollIntoView({
             behavior: 'smooth',
             block: 'nearest',
-            inline: 'nearest',
-            overflow: 'clip',
+            inline: 'nearest'
         });
     }
 
     function focusRow(index) {
-        console.log({index});
+        let options = {
+            behavior: 'smooth',
+            block: 'nearest',
+            inline: 'nearest',
+        };
+        let focus = rows[index];
+        focus.scrollIntoView(options);
 
-        console.log({focusedRow: rows[index]});
+        if (index === 0) {
+            focus = rows[index].offsetParent;
+            focus.scrollIntoView({
+                behavior: 'auto',
+                block: 'start',
+                inline: 'start',
+            });
+        }
+
         let nextTile = rows[index].firstChild.nextSibling;
         console.log({nextTile});
         nextTile = parseInt(nextTile.dataset.tileIdx, 10);
