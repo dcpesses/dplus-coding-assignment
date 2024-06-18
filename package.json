@@ -1,12 +1,12 @@
 {
     "name": "dplus-coding-assignment",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "A simple Disney+ like home screen clone",
     "main": "dist/index.html",
     "scripts": {
         "start": "webpack serve --mode development",
         "build": "webpack --mode production",
-        "deploy": "gh-pages -d dist"
+        "deploy": "gh-pages -d dist -m \"Deployed $npm_package_version via $(git branch --show-current)\""
     },
     "devDependencies": {
         "css-loader": "^6.5.1",
