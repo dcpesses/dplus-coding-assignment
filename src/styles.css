@@ -19,6 +19,10 @@
     --primary-color: #f9f9f9;
 }
 
+* {
+    box-sizing: border-box;
+}
+
 html,body {
     width: 100%;
     height: 100%;
@@ -28,7 +32,7 @@ html,body {
     overflow: hidden
 }
 body {
-    font-family: InspireRegular, Arial, sans-serif;
+    font-family: InspireRegular, Arial, Helvetica, sans-serif;
     padding: 0;
     background-color: var(--bkgd-gradient-highlight);
     background: no-repeat bottom center / cover radial-gradient(
@@ -38,6 +42,11 @@ body {
     );
     box-sizing: border-box;
 }
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: InspireBold, Arial, Helvetica, sans-serif;
+}
+
 
 #app {
     position: relative;
@@ -132,21 +141,92 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    /* display:block; */
     z-index: 2;
 }
-#modal.hidden {
+#modal.hidden,
+.hidden {
     display: none;
 }
 
 #modal-content {
-    background-color: #fff;
-    color: #000;
-    padding: 20px;
-    border-radius: 10px;
+    position: relative;
+    display: block;
+    color: var(--primary-color);
+    background: var(--bkgd-gradient-black);
+    margin: auto;
+    width: 80%;
+}
+.modal-content-body {
+    aspect-ratio: 16 / 9;
+    max-width: 100%;
+    margin: auto;
+    position: relative;
+    display: block;
+    box-sizing: border-box;
+    padding: 9% 1rem 0;
+}
+
+.modal-content-bkgd-image {
+    position: absolute;
+}
+
+.modal-content-bkgd {
+    aspect-ratio: 16 / 9;
+    width: 100%;
+    height: 0;
+    padding-top: 56.25%;
+}
+
+.background-image {
+    background-size: contain;
+    background-color: transparent;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+.modal-content-title-treatment {
+    display: block;
+    width: 25%;
+    aspect-ratio: 1.78;
+}
+.modal-content-title-treatment img {
+    width: 100%;
+}
+.modal-content-metadata {
+    padding-top: 2%;
+    font-size: 3vw;
+}
+.modal-content-metadata span {
+    display: inline-block;
+}
+
+.modal-content-ratings-availability {
+    font-family: InspireBold, Arial, Helvetica, sans-serif;
+}
+.modal-content-release-tags {
+    font-family: InspireMini, InspireRegular, Arial, Helvetica, sans-serif;
+    font-size: 1.5vw;
+    letter-spacing: -0.1px;
+    color: #aaa;
+}
+
+/* .modal-content-synopsis {} */
+
+.modal-content-error-text {
+    width: 50%;
+    font-size: 2.2vw;
+    padding: 0 1%;
+    text-align: center;
+}
+
+.modal-content-error-text h2 {
+    font-size: 4.4vw;
 }
 
 .error-background {
-    background: center / contain no-repeat url("./error.webp");
+    background: white right center / contain no-repeat url("./error.webp");
+    color: var(--bkgd-gradient-black);
 }
 
 @media (max-width: 575.98px) {

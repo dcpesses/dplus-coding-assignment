@@ -1,6 +1,6 @@
 import { fetchHomePage, fetchSetData } from './api';
 import { createTile, RowTypes } from './tile';
-import { createModal } from './modal';
+import { createModal, renderModalContent } from './modal';
 import './styles.css';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -8,8 +8,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const {modal, modalContent} = createModal();
 
+    let dataContainers = {};
+    let containerRefs = [];
     let rows = [];
     let tiles = [];
+    let tileMetadata = {};
     let focusedIndex = 0;
 
     function createRowHeader(rowDataSet) {
@@ -25,6 +28,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderHomePage(data) {
         console.log({data});
         const {containers} = data.data.StandardCollection;
+
+        dataContainers = containers;
         let rowIdx = 0;
         let rowType = RowTypes.GRID;
         containers.forEach((rowData, containerIdx) => {
@@ -106,9 +111,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         rowData[setType].items.forEach((item) => {
             const tile = createTile(item, rowType);
+            const tileIdx = tiles.length
             tile.dataset.rowIdx = rowIdx;
-            tile.dataset.tileIdx = tiles.length;
+            tile.dataset.tileIdx = tileIdx;
             rowElement.appendChild(tile);
+            tileMetadata[`${rowIdx}_${tileIdx}`] = item;
             tiles.push(tile);
         });
         return rowElement;
@@ -151,9 +158,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function showTileDetails() {
-        console.log({focusedIndex, modal, dataContainers});
-        const title = tiles[focusedIndex].dataset.title;
-        modalContent.textContent = title;
+        console.log({focusedIndex, modal, dataContainers, dataset: tiles[focusedIndex].dataset});
+        const {rowIdx, tileIdx} = tiles[focusedIndex].dataset;
+        const item = tileMetadata[`${rowIdx}_${tileIdx}`];
+
+        modalContent.innerHTML = renderModalContent(item);
         modal.classList.remove('hidden');
     }
 
@@ -166,6 +175,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function handleKeydown(event) {
         let focusedRow;
+        if (modal && !modal.classList.contains('hidden')) {
+            switch (event.key) {
+                case 'Escape':
+                    hideModal();
+                    break;
+            }
+            return;
+        }
         switch (event.key) {
             case 'ArrowRight':
                 if (focusedIndex < tiles.length - 1) {
