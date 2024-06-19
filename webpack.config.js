@@ -22,6 +22,9 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
+      minify: {
+        removeComments: false,
+      },
       template: './src/index.html',
     }),
   ],
