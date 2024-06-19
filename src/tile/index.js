@@ -47,7 +47,6 @@ export function createTileImage({contentType, isTitleTreatment, item, rowType, t
     const fallbackImage = `https://placehold.co/${fallbackWidth}x540?text=${encodeURI(title)}`;
     img.src = fallbackImage;
     if (item.image[imageType]?.[aspectRatio]) {
-        console.log({contentType, title, aspectRatio: item.image[imageType][aspectRatio]})
         let imgDefault = item.image[imageType][aspectRatio].default?.default?.url;
         let imgSrc = item.image[imageType][aspectRatio][contentType]?.default?.url || imgDefault;
         if (isTitleTreatment) {
@@ -55,11 +54,11 @@ export function createTileImage({contentType, isTitleTreatment, item, rowType, t
         }
         img.src = imgSrc;
     } else {
-        console.log(`image not found for ${title}`, {contentType, title, aspectRatio: item.image[imageType][aspectRatio]})
+        console.warn(`image not found for ${title}`, {contentType, title, aspectRatio: item.image[imageType][aspectRatio]})
     }
     img.alt = title;
     img.onerror = (e) => {
-        console.warn(`image error for ${title}`, e, {url: img.src, contentType, title, aspectRatio: item.image[imageType][aspectRatio]})
+        console.warn(`image load error for ${title}:`, e)
         img.src = fallbackImage;
         img.onerror = null;
     };

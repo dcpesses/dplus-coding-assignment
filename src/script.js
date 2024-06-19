@@ -3,17 +3,17 @@ import { createTile, RowTypes } from './tile';
 import { createModal, renderModalContent } from './modal';
 import './styles.css';
 
+
 document.addEventListener('DOMContentLoaded', () => {
     const app = document.getElementById('app');
 
     const {modal, modalContent} = createModal();
+    app.appendChild(modal);
 
-    let dataContainers = {};
-    let containerRefs = [];
     let rows = [];
     let tiles = [];
     let tileMetadata = {};
-    let focusedIndex = 0;
+    let focusedTileIdx = 0;
 
     function createRowHeader(rowDataSet) {
         let text = rowDataSet?.text?.title?.full?.set?.default?.content;
@@ -26,16 +26,16 @@ document.addEventListener('DOMContentLoaded', () => {
         return headerElement;
     }
     function renderHomePage(data) {
-        console.log({data});
         const {containers} = data.data.StandardCollection;
 
-        dataContainers = containers;
         let rowIdx = 0;
         let rowType = RowTypes.GRID;
         containers.forEach((rowData, containerIdx) => {
             try {
                 if (!rowData.set?.items) {
-                    console.warn('No items found in set:', rowData.set);
+                    if (!rowData.set?.refId) {
+                        console.warn('No items found in non-ref set:', rowData.set);
+                    }
                     return;
                 }
                 switch (containerIdx) {
@@ -65,7 +65,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 150);
         }
 
-        app.appendChild(modal);
         return containers;
     }
 
@@ -76,11 +75,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         const refRows = data.filter(s => s.set.refId);
-        refRows.forEach((refRowData) => {
+        return refRows.forEach((refRowData) => {
             const setId = refRowData.set.refId;
-            fetchSetData(setId)
+            return fetchSetData(setId)
                 .then(rowData => {
-                    console.log({setId, rowData});
                     const rowElement = renderRow({
                         rowData: rowData.data,
                         rowIdx: rows.length,
@@ -89,6 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                     rows.push(rowElement);
                     app.appendChild(rowElement);
+                    return;
                 })
                 .catch(e => {
                     console.error(`Error fetching data for ${setId}:`, e);
@@ -100,7 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!setType) {
             setType = 'set';
         }
-        console.log('renderRow', {rowData, rowIdx, rowType, setType});
         const rowElement = document.createElement('div');
         rowElement.id = rowData[setType].setId;
         rowElement.classList.add('row', `row-${rowType}`);
@@ -122,11 +120,10 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     function focusTile(index) {
-        console.log({index, focusTile: tiles[index]});
-        tiles[focusedIndex].classList.remove('focused');
-        focusedIndex = index;
-        tiles[focusedIndex].classList.add('focused');
-        tiles[focusedIndex].scrollIntoView({
+        tiles[focusedTileIdx].classList.remove('focused');
+        focusedTileIdx = index;
+        tiles[focusedTileIdx].classList.add('focused');
+        tiles[focusedTileIdx].scrollIntoView({
             behavior: 'smooth',
             block: 'nearest',
             inline: 'nearest'
@@ -152,14 +149,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         let nextTile = rows[index].firstChild.nextSibling;
-        console.log({nextTile});
         nextTile = parseInt(nextTile.dataset.tileIdx, 10);
         focusTile(nextTile);
     }
 
     function showTileDetails() {
-        console.log({focusedIndex, modal, dataContainers, dataset: tiles[focusedIndex].dataset});
-        const {rowIdx, tileIdx} = tiles[focusedIndex].dataset;
+        console.log({focusedTileIdx, modal, dataset: tiles[focusedTileIdx].dataset});
+        const {rowIdx, tileIdx} = tiles[focusedTileIdx].dataset;
         const item = tileMetadata[`${rowIdx}_${tileIdx}`];
 
         modalContent.innerHTML = renderModalContent(item);
@@ -185,30 +181,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         switch (event.key) {
             case 'ArrowRight':
-                if (focusedIndex < tiles.length - 1) {
-                    focusTile(focusedIndex + 1);
+                if (focusedTileIdx < tiles.length - 1) {
+                    focusTile(focusedTileIdx + 1);
                 }
                 break;
             case 'ArrowLeft':
-                if (focusedIndex > 0) {
-                    focusTile(focusedIndex - 1);
+                if (focusedTileIdx >= 0) {
+                    focusTile(focusedTileIdx - 1);
                 }
                 break;
             case 'ArrowDown':
-                focusedRow = parseInt(tiles[focusedIndex].dataset.rowIdx, 10);
-                console.log({
-                    focusedTile: tiles[focusedIndex],
-                    dataset: tiles[focusedIndex].dataset,
-                    focusedRow: focusedRow,
-                    rows
-                });
+                focusedRow = parseInt(tiles[focusedTileIdx].dataset.rowIdx, 10);
                 if (focusedRow < rows.length - 1) {
                     focusRow(focusedRow + 1);
                 }
                 break;
             case 'ArrowUp':
-                // focusedRow = tiles[focusedIndex].dataset.rowIdx;
-                focusedRow = parseInt(tiles[focusedIndex].dataset.rowIdx, 10);
+                focusedRow = parseInt(tiles[focusedTileIdx].dataset.rowIdx, 10);
                 if (focusedRow > 0) {
                     focusRow(focusedRow - 1);
                 }
