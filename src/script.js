@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const rowElement = document.createElement('div');
         rowElement.id = rowDataSet.setId;
         if (rowRefData) {
-            rowElement.id = rowRefData.setId;
+            rowElement.id = rowRefData.refId;
         }
         rowElement.classList.add('row', `row-${rowType}`);
         rowElement.dataset.rowIdx = rowIdx;
