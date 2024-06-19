@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function showTileDetails() {
-        console.log({focusedTileIdx, modal, dataset: tiles[focusedTileIdx].dataset});
+        // console.log({focusedTileIdx, modal, dataset: tiles[focusedTileIdx].dataset});
         const {rowIdx, tileIdx} = tiles[focusedTileIdx].dataset;
         const item = tileMetadata[`${rowIdx}_${tileIdx}`];
 
@@ -199,6 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function handleKeydown(event) {
+        // ignore tile navigation while modal is open
         if (modal && !modal.classList.contains('hidden')) {
             switch (event.key) {
                 case 'Escape':

@@ -42,33 +42,52 @@ export function renderModalContent(item) {
 
         let synopsis = '';
 
+        let videoBackground = '';
+        if (item.videoArt.length > 0 && item.videoArt[0].mediaMetadata?.urls?.[0]?.url) {
+            videoBackground = `
+                <div id="modal-background-video" class="fade">
+                    <video autoplay loop muted poster="${backgroundUrl}">
+                        <source src="${item.videoArt[0].mediaMetadata.urls[0].url}" type="video/mp4" />
+                    </video>
+                    <div class="modal-background-gradient background-image"></div>
+                </div>
+            `.trim();
+        }
+
         let modalContent = `
             <section class="modal-content-body background-image fade" style="background-image: radial-gradient(circle at 72% 50%, rgba(255, 255, 0, 0) 0%, rgba(0, 0, 0, 0.72) 59%, rgba(0, 0, 0, 1) 88%), url(${backgroundUrl});">
-                <div class="modal-content-title-treatment fade-slide">
-                    ${titleTreatment}
+
+                ${videoBackground}
+
+                <div class="modal-content-info fade-slide">
+                    <div class="modal-content-title-treatment">
+                        ${titleTreatment}
+                    </div>
+
+                    <div class="modal-content-metadata">
+                        <div class="modal-content-ratings-availability">
+                            <span class="content-format">
+                                ${item.ratings?.[0]?.value || ''}
+                            </span>
+                            <span class="content-rating">
+                                ${item.mediaMetadata?.format || ''}
+                            </span>
+                        </div>
+                        <div class="modal-content-release-tags">
+                            <span class="content-release-year">
+                                ${item.releases?.[0]?.releaseYear || ''}
+                            </span>
+                            <span class="content-release-runtime">
+                                ${runtime || ''}
+                            </span>
+                        </div>
+                    </div>
+                    <p class="modal-content-synopsis">
+                        ${synopsis}
+                    </p>
                 </div>
 
-                <div class="modal-content-metadata">
-                    <div class="modal-content-ratings-availability">
-                        <span class="content-format">
-                            ${item.ratings?.[0]?.value || ''}
-                        </span>
-                        <span class="content-rating">
-                            ${item.mediaMetadata?.format || ''}
-                        </span>
-                    </div>
-                    <div class="modal-content-release-tags">
-                        <span class="content-release-year">
-                            ${item.releases?.[0]?.releaseYear || ''}
-                        </span>
-                        <span class="content-release-runtime">
-                            ${runtime || ''}
-                        </span>
-                    </div>
-                </div>
-                <p class="modal-content-synopsis">
-                    ${synopsis}
-                </p>
+
             </section>
         `.trim();
 
@@ -80,8 +99,8 @@ export function renderModalContent(item) {
         return `
             <section class="modal-content-body error-background">
 
-                <div class="modal-content-error-text">
-                    <h2>Oh no!</h2>
+                <div class="modal-content-error-text fade-slide">
+                    <h2>Oh No!</h2>
                     <p>Either I wasn't expecting that type of data object, or I ran out of time trying to handle all scenarios. Sorry!</p>
                 </div>
 
