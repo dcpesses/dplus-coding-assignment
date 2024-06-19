@@ -80,11 +80,15 @@ document.addEventListener('DOMContentLoaded', () => {
             return fetchSetData(setId)
                 .then(rowData => {
                     const rowElement = renderRow({
+                        rowRefData: refRowData.set,
                         rowData: rowData.data,
                         rowIdx: rows.length,
                         rowType: RowTypes.GRID,
                         setType: refRowData.set.refType,
                     });
+                    if (!rowElement) {
+                        return;
+                    }
                     rows.push(rowElement);
                     app.appendChild(rowElement);
                     return;
@@ -95,19 +99,34 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function renderRow({rowData, rowIdx, rowType, setType}) {
+    function renderRow({rowRefData, rowData, rowIdx, rowType, setType}) {
         if (!setType) {
             setType = 'set';
         }
+        let rowDataSet = rowData[setType];
+        if (!rowDataSet) {
+            if (Object.keys(rowData)[0]) {
+                // To reject, or not to reject, that is the question...
+                // If nobler to ignore, comment out following code
+                rowDataSet = rowData[Object.keys(rowData)[0]];
+                // return null;
+            } else {
+                return null;
+            }
+        }
+
         const rowElement = document.createElement('div');
-        rowElement.id = rowData[setType].setId;
+        rowElement.id = rowDataSet.setId;
+        if (rowRefData) {
+            rowElement.id = rowRefData.setId;
+        }
         rowElement.classList.add('row', `row-${rowType}`);
         rowElement.dataset.rowIdx = rowIdx;
 
-        const rowHeader = createRowHeader(rowData[setType]);
+        const rowHeader = createRowHeader(rowRefData || rowDataSet);
         rowElement.appendChild(rowHeader);
 
-        rowData[setType].items.forEach((item) => {
+        rowDataSet.items.forEach((item) => {
             const tile = createTile(item, rowType);
             const tileIdx = tiles.length
             tile.dataset.rowIdx = rowIdx;
@@ -119,15 +138,17 @@ document.addEventListener('DOMContentLoaded', () => {
         return rowElement;
     };
 
-    function focusTile(index) {
+    function focusTile(index, doScroll=true) {
         tiles[focusedTileIdx].classList.remove('focused');
         focusedTileIdx = index;
         tiles[focusedTileIdx].classList.add('focused');
-        tiles[focusedTileIdx].scrollIntoView({
-            behavior: 'smooth',
-            block: 'nearest',
-            inline: 'nearest'
-        });
+        if (doScroll) {
+            tiles[focusedTileIdx].scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest',
+                inline: 'nearest'
+            });
+        }
     }
 
     function focusRow(index) {
@@ -139,18 +160,26 @@ document.addEventListener('DOMContentLoaded', () => {
         let focus = rows[index];
         focus.scrollIntoView(options);
 
+        // double up calls to top row
         if (index === 0) {
             focus = rows[index].offsetParent;
             focus.scrollIntoView({
-                behavior: 'auto',
+                behavior: 'smooth',
                 block: 'start',
-                inline: 'start',
+                inline: 'nearest',
+            });
+        } else if (index === rows.length - 1) {
+            focus = rows[index];
+            focus.scrollIntoView({
+                behavior: 'smooth',
+                block: 'end',
+                inline: 'nearest',
             });
         }
 
         let nextTile = rows[index].firstChild.nextSibling;
         nextTile = parseInt(nextTile.dataset.tileIdx, 10);
-        focusTile(nextTile);
+        focusTile(nextTile, (index !== 0 || index === rows.length - 1));
     }
 
     function showTileDetails() {
@@ -170,7 +199,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function handleKeydown(event) {
-        let focusedRow;
         if (modal && !modal.classList.contains('hidden')) {
             switch (event.key) {
                 case 'Escape':
@@ -179,19 +207,44 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             return;
         }
+
+        let focusedRow = parseInt(tiles[focusedTileIdx].dataset.rowIdx, 10);
+        let nextRow;
         switch (event.key) {
             case 'ArrowRight':
                 if (focusedTileIdx < tiles.length - 1) {
-                    focusTile(focusedTileIdx + 1);
+                    nextRow = tiles[focusedTileIdx + 1]?.dataset?.rowIdx;
+                    if (focusedRow.toString() === nextRow) {
+                        focusTile(focusedTileIdx + 1);
+                    } else {
+                        // determine index of row's starting title
+                        let rowFirstTileIdx = rows[focusedRow].firstChild.nextSibling.dataset.tileIdx;
+                        console.log('ArrowRight', {focusedTileIdx, rowFirstTileIdx});
+                        focusTile(parseInt(rowFirstTileIdx, 10));
+                    }
                 }
                 break;
             case 'ArrowLeft':
+                nextRow = tiles[focusedTileIdx - 1]?.dataset?.rowIdx;
                 if (focusedTileIdx >= 0) {
-                    focusTile(focusedTileIdx - 1);
+                    if (focusedRow.toString() === nextRow) {
+                        focusTile(focusedTileIdx - 1);
+                    } else {
+                        // determine index of row's last tile
+                        let rowLastTileIdx = rows[focusedRow].lastChild.dataset.tileIdx;
+                        console.log('ArrowLeft', {focusedTileIdx, rowLastTileIdx});
+                        focusTile(parseInt(rowLastTileIdx, 10));
+                    }
                 }
                 break;
             case 'ArrowDown':
                 focusedRow = parseInt(tiles[focusedTileIdx].dataset.rowIdx, 10);
+                // console.log({
+                //     focusedTile: tiles[focusedTileIdx],
+                //     dataset: tiles[focusedTileIdx].dataset,
+                //     focusedRow: focusedRow,
+                //     rows
+                // });
                 if (focusedRow < rows.length - 1) {
                     focusRow(focusedRow + 1);
                 }
