@@ -231,10 +231,24 @@ h1, h2, h3, h4, h5, h6 {
 }
 .modal-content-metadata {
     padding-top: 2%;
-    font-size: 3vw;
+    font-size: 2vw;
 }
 .modal-content-metadata span {
     display: inline-block;
+}
+
+.modal-content-metadata .content-rating {
+    font-size: 3vw;
+}
+.modal-content-ratings-availability span {
+    vertical-align: middle;
+}
+.modal-content-ratings-availability span.content-format {
+    font-size: 1.25vw;
+    background-color:#444;
+    border: 1px solid #f9f9f9;
+    border-radius: 5px;
+    padding: 0 3px;
 }
 
 .modal-content-ratings-availability {

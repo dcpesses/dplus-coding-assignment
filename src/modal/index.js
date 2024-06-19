@@ -54,6 +54,15 @@ export function renderModalContent(item) {
             `.trim();
         }
 
+        let contentFormat = '';
+        if (item.mediaMetadata?.format) {
+            contentFormat = `
+                <span class="content-format">
+                    ${item.mediaMetadata.format}
+                </span>
+            `.trim();
+        }
+
         let modalContent = `
             <section class="modal-content-body background-image fade" style="background-image: radial-gradient(circle at 72% 50%, rgba(255, 255, 0, 0) 0%, rgba(0, 0, 0, 0.72) 59%, rgba(0, 0, 0, 1) 88%), url(${backgroundUrl});">
 
@@ -66,17 +75,16 @@ export function renderModalContent(item) {
 
                     <div class="modal-content-metadata">
                         <div class="modal-content-ratings-availability">
-                            <span class="content-format">
+                            <span class="content-rating">
                                 ${item.ratings?.[0]?.value || ''}
                             </span>
-                            <span class="content-rating">
-                                ${item.mediaMetadata?.format || ''}
-                            </span>
+                            ${contentFormat}
                         </div>
                         <div class="modal-content-release-tags">
                             <span class="content-release-year">
                                 ${item.releases?.[0]?.releaseYear || ''}
                             </span>
+                            ${runtime ? '&#8226;' : ''}
                             <span class="content-release-runtime">
                                 ${runtime || ''}
                             </span>
@@ -90,8 +98,6 @@ export function renderModalContent(item) {
 
             </section>
         `.trim();
-
-        console.log('renderModalContent', {modalContent})
 
         return modalContent;
     } catch (e) {

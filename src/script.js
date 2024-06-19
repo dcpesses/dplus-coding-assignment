@@ -3,7 +3,6 @@ import { createTile, RowTypes } from './tile';
 import { createModal, renderModalContent } from './modal';
 import './styles.css';
 
-
 document.addEventListener('DOMContentLoaded', () => {
     const app = document.getElementById('app');
 
@@ -62,18 +61,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (tiles.length > 0) {
             setTimeout(() => {
                 focusTile(0);
-            }, 150);
+            }, 250);
         }
 
         return containers;
     }
 
     function loadReferenceRows(data) {
-        console.log('loadReferenceRows', {
-            data,
-            filtered: data.filter(s => s.set.refId)
-        });
-
         const refRows = data.filter(s => s.set.refId);
         return refRows.forEach((refRowData) => {
             const setId = refRowData.set.refId;
@@ -196,6 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         modal.classList.add('hidden');
+        modalContent.textContent = '';
     }
 
     function handleKeydown(event) {
@@ -240,12 +235,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 break;
             case 'ArrowDown':
                 focusedRow = parseInt(tiles[focusedTileIdx].dataset.rowIdx, 10);
-                // console.log({
-                //     focusedTile: tiles[focusedTileIdx],
-                //     dataset: tiles[focusedTileIdx].dataset,
-                //     focusedRow: focusedRow,
-                //     rows
-                // });
                 if (focusedRow < rows.length - 1) {
                     focusRow(focusedRow + 1);
                 }
