@@ -43,8 +43,8 @@ export function renderModalContent(item) {
         let synopsis = '';
 
         let modalContent = `
-            <section class="modal-content-body background-image" style="background-image: radial-gradient(circle at 72% 50%, rgba(255, 255, 0, 0) 0%, rgba(0, 0, 0, 0.72) 59%, rgba(0, 0, 0, 1) 88%), url(${backgroundUrl});">
-                <div class="modal-content-title-treatment">
+            <section class="modal-content-body background-image fade" style="background-image: radial-gradient(circle at 72% 50%, rgba(255, 255, 0, 0) 0%, rgba(0, 0, 0, 0.72) 59%, rgba(0, 0, 0, 1) 88%), url(${backgroundUrl});">
+                <div class="modal-content-title-treatment fade-slide">
                     ${titleTreatment}
                 </div>
 
