@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const {modal, modalContent} = createModal();
     app.appendChild(modal);
 
-    let rows = [];
+    let rows = Array(6).fill(null);
     let tiles = [];
     let tileMetadata = {};
     let focusedTileIdx = 0;
@@ -29,8 +29,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let rowIdx = 0;
         let rowType = RowTypes.GRID;
+        let rowWrapper;
         containers.forEach((rowData, containerIdx) => {
             try {
+                rowIdx += 1;
+                rowWrapper = document.createElement('div');
+                rowWrapper.classList.add('row-wrapper');
+                rowWrapper.dataset.rowIdx = rowIdx;
+                if (rowData.set?.setId) {
+                    rowWrapper.id = 'setId-' + rowData.set.setId;
+                }
+                if (rowData.set?.refId) {
+                    rowWrapper.id = 'refId-' + rowData.set.refId;
+                }
+                if (rowWrapper.id) {
+                    app.appendChild(rowWrapper);
+                }
                 if (!rowData.set?.items) {
                     if (!rowData.set?.refId) {
                         console.warn('No items found in non-ref set:', rowData.set);
@@ -50,9 +64,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 const rowElement = renderRow({rowData, rowIdx, rowType});
-                rows.push(rowElement);
-                app.appendChild(rowElement);
-                rowIdx += 1;
+                rows[rowIdx] = rowElement;
+                rowWrapper.appendChild(rowElement);
             } catch (e) {
                 console.error(e, 'Unable to parse rowData:', rowData);
             }
@@ -71,20 +84,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const refRows = data.filter(s => s.set.refId);
         return refRows.forEach((refRowData) => {
             const setId = refRowData.set.refId;
+            const rowWrapper = document.getElementById(`refId-${refRowData.set.refId}`);
             return fetchSetData(setId)
                 .then(rowData => {
                     const rowElement = renderRow({
                         rowRefData: refRowData.set,
                         rowData: rowData.data,
-                        rowIdx: rows.length,
+                        rowIdx: rowWrapper.dataset.rowIdx,
                         rowType: RowTypes.GRID,
                         setType: refRowData.set.refType,
                     });
                     if (!rowElement) {
                         return;
                     }
-                    rows.push(rowElement);
-                    app.appendChild(rowElement);
+                    rows[rowWrapper.dataset.rowIdx] = rowElement;
+                    rowWrapper.appendChild(rowElement);
                     return;
                 })
                 .catch(e => {
