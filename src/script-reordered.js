@@ -9,6 +9,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const {modal, modalContent} = createModal();
     app.appendChild(modal);
 
+    const dlogo = document.createElement('div');
+    dlogo.id = 'dlogo-image';
+    app.appendChild(dlogo);
+
     let rows = Array(6).fill(null);
     let tiles = [];
     let tileMetadata = {};
@@ -27,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderHomePage(data) {
         const {containers} = data.data.StandardCollection;
 
-        let rowIdx = 0;
+        let rowIdx = -1;
         let rowType = RowTypes.GRID;
         let rowWrapper;
         containers.forEach((rowData, containerIdx) => {
