@@ -18,13 +18,7 @@ module.exports = {
       },
     ],
   },
-  optimization: {
-    splitChunks: {
-        chunks: 'all'
-    }
-  },
   output: {
-    chunkFilename: '[name].js',
     filename: '[name].js',
     path: path.resolve(__dirname, 'dist'),
     clean: true,
