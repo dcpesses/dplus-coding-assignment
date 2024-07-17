@@ -2,11 +2,9 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  entry: './src/script.js',
-  output: {
-    filename: 'main.js',
-    path: path.resolve(__dirname, 'dist'),
-    clean: true,
+  entry: {
+    main: './src/script.js',
+    reordered: './src/script-reordered.js'
   },
   module: {
     rules: [
@@ -20,12 +18,26 @@ module.exports = {
       },
     ],
   },
+  output: {
+    filename: '[name].js',
+    path: path.resolve(__dirname, 'dist'),
+    clean: true,
+  },
   plugins: [
     new HtmlWebpackPlugin({
+      chunks: ['main'],
       minify: {
         removeComments: false,
       },
       template: './src/index.html',
+    }),
+    new HtmlWebpackPlugin({
+      chunks: ['reordered'],
+      filename: 'reorder.html',
+      minify: {
+        removeComments: false,
+      },
+      template: './src/reorder.html',
     }),
   ],
   devServer: {

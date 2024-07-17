@@ -68,10 +68,19 @@ h1, h2, h3, h4, h5, h6 {
     pointer-events: none;
 }
 
+#dlogo-image {
+    background: transparent center center / auto 80% no-repeat url("./service-logo.svg");
+    padding-top: calc(56.25% * 0.67);
+    height: 0;
+    width: 100%;
+    opacity: 0;
+    translate: -20px;
+    animation: .75s ease-in-out 0.25s 1 forwards fadeSlideInAnimation;
+}
+
 .row-wrapper {
     box-sizing: border-box;
     width: 100%;
-    background-color: rgba(0, 255, 0, 0.5);
 }
 
 .row {
